@@ -100,7 +100,7 @@ while True:
     event, values = window.read()
     if event in (None, 'Exit'):
         break
-    elif event == 'Change':
+    elif event == 'Change' and len(values['-GROUPS-']) > 0 and len(values['-COMBOS-']) > 0:
         uid_groups_df.loc[values['-COMBOS-'], 1] = groups[values['-GROUPS-'][0]]
         uid_groups = uid_groups_df.values.tolist()
         window['-COMBOS-'].Update(values=uid_groups)
