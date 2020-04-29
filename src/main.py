@@ -23,12 +23,12 @@ def file_picker():
         return values['-FILE-']
 
 
-def mainwindow(uid_groups, avail_groups):
+def postqc_window(uid_groups, avail_groups):
     """main interface. uid_groups is a list of [UID, Group] combinations.
        avail_groups is a list of the available groups. returns the main window object."""
-    table_height = min(40, len(uid_groups))
+    table_height = min(25, len(uid_groups))
     change_group_layout = [[sg.T('Add group:', font='Any 12'), sg.I(key='-ADDGROUP-', size=(22,1), font='Any 12'), sg.B('Add Group', key='Add', font='Any 12')]]
-    manage_groups_layout = [[sg.B('Assign to Group', key='Change', font='Any 12'), sg.B('Clear Group (Exclude from analysis)', key='Exclude', font='Any 12')]]
+    manage_groups_layout = [[sg.B('Assign to Group', key='Change', font='Any 12'), sg.B('Exclude from Analysis', key='Exclude', font='Any 12')]]
     layout = [
         [sg.Table(values=uid_groups, headings=['UID', 'Group'], display_row_numbers=False,
                   auto_size_columns=True, num_rows=table_height, key="-COMBOS-", font='Any 12'),
@@ -42,22 +42,29 @@ def mainwindow(uid_groups, avail_groups):
     return(window)
 
 
+def germination_window():
+    """interface for changing germination times"""
+    pass
+
+
 def get_uid_groups(df):
     """gets the unique uids and groups in the specified dataframe. returns a tuple of uid/group combos (list) and the unique groups (list)."""
     uids = pd.unique(df['UID'])
 
     # XXX: there is a better wya of doing this
     uid_groups = list()
-    groups = set()
+    groupset = set()
     for uid in uids:
         group = str(df[df['UID'] == uid].iloc[0,1])
         if group == 'nan':
             # sg tables act really weird if you feed them nans
             group = 'NA'
         uid_groups.append([uid, group])
-        groups.add(group)
-    groups = list(groups)
-    groups.sort()
+        groupset.add(group)
+
+    # needs to be list of lists
+    groups = [[x,] for x in groupset]
+    groups.sort(key=lambda x: x[0])
     
     return uid_groups, groups
 
@@ -86,7 +93,7 @@ uid_groups, groups = get_uid_groups(df)
 uid_groups_df = pd.DataFrame(uid_groups)
 
 # display main window
-window = mainwindow(uid_groups, groups)
+window = postqc_window(uid_groups, groups)
 
 # main loop
 while True:
@@ -102,13 +109,12 @@ while True:
             df.loc[df['UID'] == uid, 'Group'] = group
         df.to_csv(file, sep='\t', index=False)
     elif event == 'Add':
-        groups.append(values['-ADDGROUP-'])
-        groups.sort()
+        groups.append([values['-ADDGROUP-'],])
+        groups.sort(key=lambda x: x[0])
         window['-GROUPS-'].Update(values=groups)
     elif event == 'Exclude':
         uid_groups_df.loc[values['-COMBOS-'], 1] = 'NA'
         uid_groups = uid_groups_df.values.tolist()
         window['-COMBOS-'].Update(values=uid_groups)
-
 
 window.close()
