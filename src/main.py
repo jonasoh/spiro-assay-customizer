@@ -27,15 +27,17 @@ def mainwindow(uid_groups, avail_groups):
     """main interface. uid_groups is a list of [UID, Group] combinations.
        avail_groups is a list of the available groups. returns the main window object."""
     table_height = min(40, len(uid_groups))
+    change_group_layout = [[sg.T('Add group:'), sg.I(key='-ADDGROUP-', size=(22,1)), sg.B('Add Group', key='Add')]]
+    manage_groups_layout = [[sg.B('Assign to Group', key='Change'), sg.B('Clear Group (Exclude from analysis)', key='Exclude')]]
     layout = [
         [sg.Table(values=uid_groups, headings=['UID', 'Group'], display_row_numbers=False,
                   auto_size_columns=True, num_rows=table_height, key="-COMBOS-"),
         sg.Table(values=avail_groups, headings=['Available groups',], display_row_numbers=False,
                   auto_size_columns=True, num_rows=table_height, key="-GROUPS-",
                   select_mode=sg.TABLE_SELECT_MODE_BROWSE) ],
-                  [sg.T('Add group:'), sg.I(key='-ADDGROUP-'), sg.B('Add Group', key='Add')],
-                  [sg.B('Assign to Group', key='Change'), sg.B('Clear Group (Exclude from analysis)', key='Exclude')],
-                  [sg.B('Write PostQC File', key='Write'), sg.B('Exit') ] ]
+                  [sg.Frame('Group Management', layout=change_group_layout)],
+                  [sg.Frame('Seedling Management', layout=manage_groups_layout)],
+                  [sg.Sizer(h_pixels=150), sg.B('Write PostQC File', key='Write'), sg.B('Exit') ] ]
     window = sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False)
     return(window)
 
@@ -60,7 +62,11 @@ def get_uid_groups(df):
 
 
 # start here.
-file = file_picker()
+if sys.argv[1] is None:
+    file = file_picker()
+else:
+    file = sys.argv[1]
+
 if file is None:
     sys.exit()
 elif not file.endswith('.postQC.tsv'):
