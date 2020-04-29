@@ -31,7 +31,7 @@ def mainwindow(uid_groups, avail_groups):
         [sg.Table(values=uid_groups, headings=['UID', 'Group'], display_row_numbers=False,
                   auto_size_columns=True, num_rows=table_height, key="-COMBOS-"),
         sg.Table(values=avail_groups, headings=['Available groups',], display_row_numbers=False,
-                  auto_size_columns=True, num_rows=min(25, len(groups)), key="-GROUPS-",
+                  auto_size_columns=True, num_rows=table_height, key="-GROUPS-",
                   select_mode=sg.TABLE_SELECT_MODE_BROWSE) ],
                   [sg.T('Add group:'), sg.I(key='-ADDGROUP-'), sg.B('Add Group', key='Add')],
                   [sg.B('Assign to Group', key='Change'), sg.B('Clear Group (Exclude from analysis)', key='Exclude')],
