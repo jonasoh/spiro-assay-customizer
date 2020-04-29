@@ -57,6 +57,7 @@ def get_uid_groups(df):
         uid_groups.append([uid, group])
         groups.add(group)
     groups = list(groups)
+    groups.sort()
     
     return uid_groups, groups
 
@@ -102,6 +103,7 @@ while True:
         df.to_csv(file, sep='\t', index=False)
     elif event == 'Add':
         groups.append(values['-ADDGROUP-'])
+        groups.sort()
         window['-GROUPS-'].Update(values=groups)
     elif event == 'Exclude':
         uid_groups_df.loc[values['-COMBOS-'], 1] = 'NA'
