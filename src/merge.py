@@ -4,10 +4,6 @@ import os
 import PySimpleGUI as sg
 import pandas as pd
 
-sg.set_options(auto_size_buttons=True, font='Any 12')
-sg.ChangeLookAndFeel('Dark')
-
-
 def merge_window():
     """window for merging experiments. will deal with either root growth or germination data, but not both at the same time."""
     # the table of experiments
@@ -123,27 +119,28 @@ def merge_experiments(exps):
             g_df = pd.concat([log_df, log_tsv])
         return g_df, log_df, None, None
 
+def start_merge():
+    window = merge_window()
+    exps = list()
 
-window = merge_window()
-exps = list()
-
-while True:
-    event, values = window.read()
-    if event in (None, 'Exit'):
-        break
-    elif event == 'Add' and values['exp'] != '':
-        if not values['exp'].endswith(('Germination', 'Root Growth')):
-            sg.Popup('Selected directory must be named either "Germination" or "Root Growth"')
-        else:
-            exps.append([values['exp']])
+    while True:
+        event, values = window.read()
+        if event in (None, 'Exit'):
+            break
+        elif event == 'Add' and values['exp'] != '':
+            if not values['exp'].endswith(('Germination', 'Root Growth')):
+                sg.Popup('Selected directory must be named either "Germination" or "Root Growth"')
+            else:
+                exps.append([values['exp']])
+                window['-EXPERIMENTS-'].Update(values=exps)
+        elif event == 'Remove':
+            del exps[values['-EXPERIMENTS-'][0]]
             window['-EXPERIMENTS-'].Update(values=exps)
-    elif event == 'Remove':
-        del exps[values['-EXPERIMENTS-'][0]]
-        window['-EXPERIMENTS-'].Update(values=exps)
-    elif event == 'Merge':
-        # commence merging
-        g_df, log_df, r_df, ps_df = merge_experiments(exps)
-        if g_df is not None:
-            save_germination(g_df, log_df)
-        elif r_df is not None:
-            save_rootgrowth(r_df, ps_df)
+        elif event == 'Merge':
+            # commence merging
+            g_df, log_df, r_df, ps_df = merge_experiments(exps)
+            if g_df is not None:
+                save_germination(g_df, log_df)
+            elif r_df is not None:
+                save_rootgrowth(r_df, ps_df)
+    window.close()

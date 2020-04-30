@@ -4,10 +4,6 @@ import PySimpleGUI as sg
 import pandas as pd
 import numpy as np
 
-sg.set_options(auto_size_buttons=True, font='Any 12')
-sg.ChangeLookAndFeel('Dark')
-
-
 def file_picker():
     """shows a file picker for selecting a postQC.tsv file. Returns None on Cancel."""
     chooser = sg.Window('Choose file', [
@@ -63,52 +59,52 @@ def get_uid_groups(df):
     return uid_groups, groups
 
 
-# start here.
-if len(sys.argv) == 1:
-    file = file_picker()
-else:
-    file = sys.argv[1]
+def start_editor():
+    if len(sys.argv) == 1:
+        file = file_picker()
+    else:
+        file = sys.argv[1]
 
-if file is None:
-    sys.exit()
-elif not file.endswith('.postQC.tsv'):
-    sg.Popup('The file must be a postQC.tsv file.')
-    sys.exit()
-else:
-    try:
-        df = pd.read_csv(file, sep='\t', engine='python')
-    except:
-        sg.Popup("Couldn't read file.")
+    if file is None:
         sys.exit()
+    elif not file.endswith('.postQC.tsv'):
+        sg.Popup('The file must be a postQC.tsv file.')
+        sys.exit()
+    else:
+        try:
+            df = pd.read_csv(file, sep='\t', engine='python')
+        except:
+            sg.Popup("Couldn't read file.")
+            sys.exit()
 
-# get uid/group combos, and save a working copy in a dataframe
-# groups can just be a list
-uid_groups, groups = get_uid_groups(df)
-uid_groups_df = pd.DataFrame(uid_groups)
+    # get uid/group combos, and save a working copy in a dataframe
+    # groups can just be a list
+    uid_groups, groups = get_uid_groups(df)
+    uid_groups_df = pd.DataFrame(uid_groups)
 
-# display main window
-window = postqc_window(uid_groups, groups)
+    # display main window
+    window = postqc_window(uid_groups, groups)
 
-# main loop
-while True:
-    event, values = window.read()
-    if event in (None, 'Exit'):
-        break
-    elif event == 'Change' and len(values['-GROUPS-']) > 0 and len(values['-COMBOS-']) > 0:
-        uid_groups_df.loc[values['-COMBOS-'], 1] = groups[values['-GROUPS-'][0]]
-        uid_groups = uid_groups_df.values.tolist()
-        window['-COMBOS-'].Update(values=uid_groups)
-    elif event == 'Write':
-        for (uid, group) in uid_groups:
-            df.loc[df['UID'] == uid, 'Group'] = group
-        df.to_csv(file, sep='\t', index=False)
-    elif event == 'Add':
-        groups.append([values['-ADDGROUP-'],])
-        groups.sort(key=lambda x: x[0])
-        window['-GROUPS-'].Update(values=groups)
-    elif event == 'Exclude':
-        uid_groups_df.loc[values['-COMBOS-'], 1] = 'NA'
-        uid_groups = uid_groups_df.values.tolist()
-        window['-COMBOS-'].Update(values=uid_groups)
+    # main loop
+    while True:
+        event, values = window.read()
+        if event in (None, 'Exit'):
+            break
+        elif event == 'Change' and len(values['-GROUPS-']) > 0 and len(values['-COMBOS-']) > 0:
+            uid_groups_df.loc[values['-COMBOS-'], 1] = groups[values['-GROUPS-'][0]]
+            uid_groups = uid_groups_df.values.tolist()
+            window['-COMBOS-'].Update(values=uid_groups)
+        elif event == 'Write':
+            for (uid, group) in uid_groups:
+                df.loc[df['UID'] == uid, 'Group'] = group
+            df.to_csv(file, sep='\t', index=False)
+        elif event == 'Add':
+            groups.append([values['-ADDGROUP-'],])
+            groups.sort(key=lambda x: x[0])
+            window['-GROUPS-'].Update(values=groups)
+        elif event == 'Exclude':
+            uid_groups_df.loc[values['-COMBOS-'], 1] = 'NA'
+            uid_groups = uid_groups_df.values.tolist()
+            window['-COMBOS-'].Update(values=uid_groups)
 
-window.close()
+    window.close()
