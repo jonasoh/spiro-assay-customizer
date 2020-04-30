@@ -42,11 +42,6 @@ def postqc_window(uid_groups, avail_groups):
     return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False)
 
 
-def germination_window():
-    """interface for changing germination times"""
-    pass
-
-
 def get_uid_groups(df):
     """gets the unique uids and groups in the specified dataframe. returns a tuple of uid/group combos (list) and the unique groups (list)."""
     uids = pd.unique(df['UID'])

@@ -121,16 +121,6 @@ def merge_experiments(exps):
         return g_df, log_df, None, None
 
 
-def merge_postqc(files):
-    """takes a list of a lists of {germination,rootgrowth}.postQC files, merges them if they have identical column names, and returns as dataframe"""
-    pass
-    
-
-def merge_perseed(files):
-    """takes a list of germination-perseed files, merges them if they have identical column names, and returns as dataframe"""
-    pass
-    
-
 window = merge_window()
 exps = list()
 
