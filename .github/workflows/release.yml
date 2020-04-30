@@ -73,9 +73,9 @@ jobs:
       - name: Check out
         uses: actions/checkout@v2
       - name: Get tag
-      id: tag
-      run: |
-        echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+        id: tag
+        run: |
+          echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
       - name: Download MacOS release
         uses: actions/download-artifact@v2
         with:
