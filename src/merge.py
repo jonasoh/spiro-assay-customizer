@@ -46,7 +46,7 @@ def save_germination(g_df, log_df):
         log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
 
 
-def save_rootgrowth(r_df, ps_df):
+def save_rootgrowth(r_df):
     """save merged root growth data to a new folder"""
     savelayout = [
         [sg.Text('Choose location for merged results')],
@@ -63,12 +63,10 @@ def save_rootgrowth(r_df, ps_df):
         dir = os.path.join(values['dir'], 'Results', 'Root Growth')
         os.makedirs(dir, exist_ok=True)
         r_file = os.path.join(dir, 'rootgrowth.postQC.tsv')
-        ps_file = os.path.join(dir, 'germination-perseed.tsv')
         if os.path.exists(r_file):
             sg.Popup('Selected directory already contains root growth data. Aborting.')
             return
         r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
-        ps_df.to_csv(ps_file, index=False, na_rep='NA', sep='\t')
 
 
 def unlist(l):
@@ -77,7 +75,7 @@ def unlist(l):
 
 
 def merge_experiments(exps):
-    """takes a list of a lists of experiment directories and returns merged_germination, merged_germination_log, merged_rootgrowth, merged_perseed"""
+    """takes a list of a lists of experiment directories and returns merged_germination, merged_germination_log, merged_rootgrowth"""
     rtsv = lambda x: pd.read_csv(x, sep='\t')
     bail = lambda x: sg.Popup("File " + x + "doesn't exist, but is needed for merge. Aborting.")
     
@@ -90,21 +88,16 @@ def merge_experiments(exps):
     r_df = pd.DataFrame()
     g_df = pd.DataFrame()
     log_df = pd.DataFrame()
-    ps_df = pd.DataFrame()
 
     if mode == 'Root Growth':
         for exp in exps:
             r_file = os.path.join(exp, 'rootgrowth.postQC.tsv')
-            ps_file = os.path.join(exp, 'germination-perseed.tsv')
-            for file in r_file, ps_file:
-                if not os.path.exists(file):
-                    bail(file)
-                    return None, None, None, None
+            if not os.path.exists(r_file):
+                bail(r_file)
+                return None, None, None
             r_tsv = rtsv(r_file)
             r_df = pd.concat([r_df, r_tsv])
-            ps_tsv = rtsv(ps_file)
-            ps_df = pd.concat([ps_df, ps_tsv])
-        return None, None, r_df, ps_df
+        return None, None, r_df
     elif mode == 'Germination':
         for exp in exps:
             g_file = os.path.join(exp, 'germination.postQC.tsv')
@@ -112,12 +105,13 @@ def merge_experiments(exps):
             for file in g_file, log_file:
                 if not os.path.exists(file):
                     bail(file)
-                    return None, None, None, None
+                    return None, None, None
             g_tsv = rtsv(g_file)
             g_df = pd.concat([g_df, g_tsv])
             log_tsv = rtsv(log_file)
             g_df = pd.concat([log_df, log_tsv])
-        return g_df, log_df, None, None
+        return g_df, log_df, None
+
 
 def start_merge():
     window = merge_window()
@@ -138,9 +132,9 @@ def start_merge():
             window['-EXPERIMENTS-'].Update(values=exps)
         elif event == 'Merge':
             # commence merging
-            g_df, log_df, r_df, ps_df = merge_experiments(exps)
+            g_df, log_df, r_df = merge_experiments(exps)
             if g_df is not None:
                 save_germination(g_df, log_df)
             elif r_df is not None:
-                save_rootgrowth(r_df, ps_df)
+                save_rootgrowth(r_df)
     window.close()
