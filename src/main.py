@@ -63,8 +63,7 @@ def get_uid_groups(df):
         groupset.add(group)
 
     # needs to be list of lists
-    groups = [[x,] for x in groupset]
-    groups.sort(key=lambda x: x[0])
+    groups = sorted(([x,] for x in groupset), key=lambda x: x[0])
     
     return uid_groups, groups
 
