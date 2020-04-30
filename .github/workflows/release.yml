@@ -65,51 +65,51 @@ jobs:
         name: SPIRO Assay Customizer Linux ${{ steps.tag.outputs.tag }}.gz
         path: dist/*.gz
 
-#  Release:
-#    needs: [MacOS, Linux]
-#    runs-on: ubuntu-latest
-#    
-#    steps:
-#    - name: Check out
-#      uses: actions/checkout@v2
-#    - name: Get tag
-#      id: tag
-#      run: |
-#        echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
-#    - name: Download MacOS release
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
-#        path: releases/SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
-#    - name: Download Linux release
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: SPIRO Assay Customizer Linux ${{ steps.tag.outputs.tag }}.gz
-#        path: releases/SPIRO Assay Customizer.gz
-#    - name: Create release
-#      uses: actions/create-release@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        tag_name: ${{ steps.tag.outputs.tag }}
-#        release_name: ${{ steps.tag.outputs.tag }}
-#        draft: false
-#        prerelease: false
-#    - name: Upload MacOS release asset
-#      uses: actions/upload-release-asset@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }
-#        asset_path: releases/SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
-#        asset_name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
-#        asset_content_type: application/zip
-#    - name: Upload Linux release asset
-#      uses: actions/upload-release-asset@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }
-#        asset_path: releases/SPIRO Assay Customizer.gz
-#        asset_name: SPIRO Assay Customizer.gz
-#        asset_content_type: application/gzip
+  Release:
+    needs: [MacOS, Linux]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out
+      uses: actions/checkout@v2
+    - name: Get tag
+      id: tag
+      run: |
+        echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+    - name: Download MacOS release
+      uses: actions/download-artifact@v2
+      with:
+        name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
+        path: releases/SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
+    - name: Download Linux release
+      uses: actions/download-artifact@v2
+      with:
+        name: SPIRO Assay Customizer Linux ${{ steps.tag.outputs.tag }}.gz
+        path: releases/SPIRO Assay Customizer.gz
+    - name: Create release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        release_name: ${{ steps.tag.outputs.tag }}
+        draft: false
+        prerelease: false
+    - name: Upload MacOS release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }
+        asset_path: releases/SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
+        asset_name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
+        asset_content_type: application/zip
+    - name: Upload Linux release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }
+        asset_path: releases/SPIRO Assay Customizer.gz
+        asset_name: SPIRO Assay Customizer.gz
+        asset_content_type: application/gzip
