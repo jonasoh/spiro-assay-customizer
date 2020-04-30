@@ -17,7 +17,7 @@ jobs:
       run: |
         echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
     - name: Set up Python
-    - uses: actions/setup-python@v1
+      uses: actions/setup-python@v1
       with:
         python-version: '3.8'
     - name: Install requirements
