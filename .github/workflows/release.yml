@@ -26,7 +26,7 @@ jobs:
         python -m pip install pyinstaller
     - name: Create MacOS app
       run: |
-        pyinstaller pyinstaller --add-binary='/System/Library/Frameworks/Tk.framework/Tk':'tk' --add-binary='/System/Library/Frameworks/Tcl.framework/Tcl':'tcl' --osx-bundle-identifier slu.spiro.customizer --windowed --noconfirm -n 'SPIRO Assay Customizer' -i resources/spiro-assay-customizer.icns src/main.py
+        pyinstaller --add-binary='/System/Library/Frameworks/Tk.framework/Tk':'tk' --add-binary='/System/Library/Frameworks/Tcl.framework/Tcl':'tcl' --osx-bundle-identifier slu.spiro.customizer --windowed --noconfirm -n 'SPIRO Assay Customizer' -i resources/spiro-assay-customizer.icns src/main.py
     - name: Build Zip
       run: |
         zip -r dist/SPIRO_Assay_Customizer_Mac_${{ steps.tag.outputs.tag }}.zip "dist/SPIRO Assay Customizer.app"
