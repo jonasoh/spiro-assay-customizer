@@ -4,15 +4,16 @@ import PySimpleGUI as sg
 import pandas as pd
 import numpy as np
 
-sg.set_options(auto_size_buttons=True)
+sg.set_options(auto_size_buttons=True, font='Any 12')
 sg.ChangeLookAndFeel('Dark')
+
 
 def file_picker():
     """shows a file picker for selecting a postQC.tsv file. Returns None on Cancel."""
     chooser = sg.Window('Choose file', [
-        [sg.Text('Filename', font='Any 12')],
-        [sg.Input(font='Any 12'), sg.FileBrowse(key='-FILE-', font='Any 12', file_types=(('PostQC TSV files', '*.postQC.tsv'),))],
-        [sg.OK(font='Any 12'), sg.Cancel(font='Any 12')] ])
+        [sg.Text('Filename')],
+        [sg.Input(sg.FileBrowse(key='-FILE-', file_types=(('PostQC TSV files', '*.postQC.tsv'),))],
+        [sg.OK(), sg.Cancel()] ])
 
     event, values = chooser.read()
     if event in (None, 'Cancel'):
@@ -27,19 +28,18 @@ def postqc_window(uid_groups, avail_groups):
     """main interface. uid_groups is a list of [UID, Group] combinations.
        avail_groups is a list of the available groups. returns the main window object."""
     table_height = min(25, len(uid_groups))
-    change_group_layout = [[sg.T('Add group:', font='Any 12'), sg.I(key='-ADDGROUP-', size=(22,1), font='Any 12'), sg.B('Add Group', key='Add', font='Any 12')]]
-    manage_groups_layout = [[sg.B('Assign to Group', key='Change', font='Any 12'), sg.B('Exclude from Analysis', key='Exclude', font='Any 12')]]
+    change_group_layout = [[sg.T('Add group:'), sg.I(key='-ADDGROUP-', size=(22,1)), sg.B('Add Group', key='Add')]]
+    manage_groups_layout = [[sg.B('Assign to Group', key='Change'), sg.B('Exclude from Analysis', key='Exclude']]
     layout = [
         [sg.Table(values=uid_groups, headings=['UID', 'Group'], display_row_numbers=False,
-                  auto_size_columns=True, num_rows=table_height, key="-COMBOS-", font='Any 12'),
+                  auto_size_columns=True, num_rows=table_height, key="-COMBOS-"),
         sg.Table(values=avail_groups, headings=['Available groups',], display_row_numbers=False,
                   auto_size_columns=True, num_rows=table_height, key="-GROUPS-",
-                  select_mode=sg.TABLE_SELECT_MODE_BROWSE, font='Any 12') ],
-                  [sg.Frame('Group Management', layout=change_group_layout, font='Any 12')],
-                  [sg.Frame('Seedling Management', layout=manage_groups_layout, font='Any 12')],
-                  [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write', font='Any 12'), sg.B('Exit', font='Any 12') ] ]
-    window = sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False)
-    return(window)
+                  select_mode=sg.TABLE_SELECT_MODE_BROWSE) ],
+                  [sg.Frame('Group Management', layout=change_group_layout],
+                  [sg.Frame('Seedling Management', layout=manage_groups_layout)],
+                  [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write'), sg.B('Exit') ] ]
+    return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False)
 
 
 def germination_window():
