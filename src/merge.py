@@ -7,11 +7,6 @@ import pandas as pd
 sg.set_options(auto_size_buttons=True, font='Any 12')
 sg.ChangeLookAndFeel('Dark')
 
-savelayout = [
-    [sg.Text('Choose location for merged results')],
-    [sg.T('Folder:'), sg.I(key='dir', size=(45,1)), sg.FolderBrowse()],
-    [sg.OK(), sg.Cancel()] ]
-
 
 def merge_window():
     """window for merging experiments. will deal with either root growth or germination data, but not both at the same time."""
@@ -33,6 +28,10 @@ def merge_window():
 
 def save_germination(g_df, log_df):
     """save merged germination data to a new folder"""
+    savelayout = [
+        [sg.Text('Choose location for merged results')],
+        [sg.T('Folder:'), sg.I(key='dir', size=(45,1)), sg.FolderBrowse()],
+        [sg.OK(), sg.Cancel()] ]
     save_window = sg.Window('Save merged data', layout=savelayout)
     event, values = save_window.read()
     if event in (None, 'Cancel'):
@@ -47,12 +46,16 @@ def save_germination(g_df, log_df):
         if os.path.exists(g_file):
             sg.Popup('Selected directory already contains germination data. Aborting.')
             return
-        g_df.to_csv(g_file, index=False, na_rep='NA')
-        log_df.to_csv(log_file, index=False, na_rep='NA')
+        g_df.to_csv(g_file, index=False, na_rep='NA', sep='\t')
+        log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
 
 
 def save_rootgrowth(r_df, ps_df):
     """save merged root growth data to a new folder"""
+    savelayout = [
+        [sg.Text('Choose location for merged results')],
+        [sg.T('Folder:'), sg.I(key='dir', size=(45,1)), sg.FolderBrowse()],
+        [sg.OK(), sg.Cancel()] ]
     save_window = sg.Window('Save merged data', layout=savelayout)
     event, values = save_window.read()
     if event in (None, 'Cancel'):
@@ -68,8 +71,8 @@ def save_rootgrowth(r_df, ps_df):
         if os.path.exists(r_file):
             sg.Popup('Selected directory already contains root growth data. Aborting.')
             return
-        r_df.to_csv(r_file, index=False, na_rep='NA')
-        ps_df.to_csv(ps_file, index=False, na_rep='NA')
+        r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
+        ps_df.to_csv(ps_file, index=False, na_rep='NA', sep='\t')
 
 
 def unlist(l):
