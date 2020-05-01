@@ -32,7 +32,7 @@ def save_germination(g_df, log_df):
     event, values = save_window.read()
     if event in (None, 'Cancel'):
         save_window.close()
-        sg.Popup('Merged data not saved.')
+        sg.Popup('Merged data not saved.', title='SPIRO Assay Customizer')
         return
     elif event == 'OK':
         save_window.close()
@@ -40,7 +40,7 @@ def save_germination(g_df, log_df):
         os.makedirs(dir, exist_ok=True)
         g_file = os.path.join(dir, 'germination.postQC.tsv')
         if os.path.exists(g_file):
-            sg.Popup('Selected directory already contains germination data. Aborting.')
+            sg.Popup('Selected directory already contains germination data. Aborting.', title='SPIRO Assay Customizer')
             return
         g_df.to_csv(g_file, index=False, na_rep='NA', sep='\t')
         log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
@@ -64,7 +64,7 @@ def save_rootgrowth(r_df):
         os.makedirs(dir, exist_ok=True)
         r_file = os.path.join(dir, 'rootgrowth.postQC.tsv')
         if os.path.exists(r_file):
-            sg.Popup('Selected directory already contains root growth data. Aborting.')
+            sg.Popup('Selected directory already contains root growth data. Aborting.', title='SPIRO Assay Customizer')
             return
         r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
 
@@ -82,7 +82,7 @@ def merge_experiments(exps):
     exps = unlist(exps)
     mode = os.path.basename(exps[0])
     if not all(mode == os.path.basename(x) for x in exps):
-        sg.Popup('Cannot mix Germination and Root Growth assays, not merging.')
+        sg.Popup('Cannot mix Germination and Root Growth assays, not merging.', title='SPIRO Assay Customizer')
         return None
     
     r_df = pd.DataFrame()
@@ -123,7 +123,7 @@ def start_merge():
             break
         elif event == 'Add' and values['exp'] != '':
             if not values['exp'].endswith(('Germination', 'Root Growth')):
-                sg.Popup('Selected directory must be named either "Germination" or "Root Growth"')
+                sg.Popup('Selected directory must be named either "Germination" or "Root Growth"', title='SPIRO Assay Customizer')
             else:
                 exps.append([values['exp']])
                 window['-EXPERIMENTS-'].Update(values=exps)

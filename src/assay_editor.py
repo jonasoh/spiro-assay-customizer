@@ -39,7 +39,8 @@ def postqc_window(uid_groups, avail_groups):
 
 
 def get_uid_groups(df):
-    """gets the unique uids and groups in the specified dataframe. returns a tuple of uid/group combos (list) and the unique groups (list)."""
+    """gets the unique uids and groups in the specified dataframe. returns a
+       tuple of uid/group combos (list) and the unique groups (list)."""
     uids = pd.unique(df['UID'])
 
     # XXX: there is a better wya of doing this
@@ -59,13 +60,12 @@ def get_uid_groups(df):
     return uid_groups, groups
 
 
-def start_editor():
-    if len(sys.argv) == 1:
+def start_editor(file=None):
+    if file is None:
         file = file_picker()
-    else:
-        file = sys.argv[1]
 
     if file is None:
+        # no file was provided in file picker
         sys.exit()
     elif not file.endswith('.postQC.tsv'):
         sg.Popup('The file must be a postQC.tsv file.')
