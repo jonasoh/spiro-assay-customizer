@@ -73,8 +73,8 @@ def start_editor(file=None):
     else:
         try:
             df = pd.read_csv(file, sep='\t', engine='python')
-        except:
-            sg.Popup("Couldn't read file.")
+        except OSError as e:
+            sg.Popup("Couldn't read file: " + e.strerror)
             sys.exit()
 
     # get uid/group combos, and save a working copy in a dataframe
@@ -99,8 +99,8 @@ def start_editor(file=None):
                 df.loc[df['UID'] == uid, 'Group'] = group
             try:
                 df.to_csv(file, sep='\t', index=False)
-            except PermissionError:
-                sg.Popup('Unable to write file: Permission denied.')
+            except OSError as e:
+                sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror)
         elif event == 'Add':
             groups.append([values['-ADDGROUP-'],])
             groups.sort(key=lambda x: x[0])

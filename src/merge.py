@@ -30,6 +30,7 @@ def save_germination(g_df, log_df):
         [sg.OK(), sg.Cancel()] ]
     save_window = sg.Window('Save merged data', layout=savelayout)
     event, values = save_window.read()
+    
     if event in (None, 'Cancel'):
         save_window.close()
         sg.Popup('Merged data not saved.', title='SPIRO Assay Customizer')
@@ -45,8 +46,8 @@ def save_germination(g_df, log_df):
         try:
             g_df.to_csv(g_file, index=False, na_rep='NA', sep='\t')
             log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
-        except PermissionError:
-            sg.Popup('Unable to write file: Permission denied.')
+        except OSError as e:
+            sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror)
 
 
 def save_rootgrowth(r_df):
@@ -57,6 +58,7 @@ def save_rootgrowth(r_df):
         [sg.OK(), sg.Cancel()] ]
     save_window = sg.Window('Save merged data', layout=savelayout)
     event, values = save_window.read()
+    
     if event in (None, 'Cancel'):
         save_window.close()
         sg.Popup('Merged data not saved.')
@@ -71,8 +73,8 @@ def save_rootgrowth(r_df):
             return
         try:
             r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
-        except PermissionError:
-            sg.Popup('Unable to write file: Permission denied.')
+        except OSError as e:
+            sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror)
 
 
 def unlist(l):
@@ -101,7 +103,11 @@ def merge_experiments(exps):
             if not os.path.exists(r_file):
                 bail(r_file)
                 return None, None, None
-            r_tsv = rtsv(r_file)
+            try:
+                r_tsv = rtsv(r_file)
+            except OSError as e:
+                sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror)
+                return None, None, None
             r_df = pd.concat([r_df, r_tsv])
         return None, None, r_df
     elif mode == 'Germination':
@@ -112,9 +118,13 @@ def merge_experiments(exps):
                 if not os.path.exists(file):
                     bail(file)
                     return None, None, None
-            g_tsv = rtsv(g_file)
+            try:
+                g_tsv = rtsv(g_file)
+                log_tsv = rtsv(log_file)
+            except OSError as e:
+                sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror)
+                return None, None, None
             g_df = pd.concat([g_df, g_tsv])
-            log_tsv = rtsv(log_file)
             g_df = pd.concat([log_df, log_tsv])
         return g_df, log_df, None
 
