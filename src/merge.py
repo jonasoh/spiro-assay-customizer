@@ -42,8 +42,11 @@ def save_germination(g_df, log_df):
         if os.path.exists(g_file):
             sg.Popup('Selected directory already contains germination data. Aborting.', title='SPIRO Assay Customizer')
             return
-        g_df.to_csv(g_file, index=False, na_rep='NA', sep='\t')
-        log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
+        try:
+            g_df.to_csv(g_file, index=False, na_rep='NA', sep='\t')
+            log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
+        except PermissionError:
+            sg.Popup('Unable to write file: Permission denied.')
 
 
 def save_rootgrowth(r_df):
@@ -66,7 +69,10 @@ def save_rootgrowth(r_df):
         if os.path.exists(r_file):
             sg.Popup('Selected directory already contains root growth data. Aborting.', title='SPIRO Assay Customizer')
             return
-        r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
+        try:
+            r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
+        except PermissionError:
+            sg.Popup('Unable to write file: Permission denied.')
 
 
 def unlist(l):

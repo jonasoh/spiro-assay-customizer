@@ -97,7 +97,10 @@ def start_editor(file=None):
         elif event == 'Write':
             for (uid, group) in uid_groups:
                 df.loc[df['UID'] == uid, 'Group'] = group
-            df.to_csv(file, sep='\t', index=False)
+            try:
+                df.to_csv(file, sep='\t', index=False)
+            except PermissionError:
+                sg.Popup('Unable to write file: Permission denied.')
         elif event == 'Add':
             groups.append([values['-ADDGROUP-'],])
             groups.sort(key=lambda x: x[0])
