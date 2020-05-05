@@ -10,7 +10,7 @@ def file_picker():
     chooser = sg.Window('Choose file', [
         [sg.Text('Filename')],
         [sg.Input(), sg.FileBrowse(key='-FILE-', file_types=(('PostQC TSV files', '*.postQC.tsv'),))],
-        [sg.OK(), sg.Cancel()] ], icon=icon if sys.platform == 'win32' else None)
+        [sg.OK(), sg.Cancel()] ], icon=icon)
 
     event, values = chooser.read()
     if event in (None, 'Cancel'):
@@ -36,7 +36,7 @@ def postqc_window(uid_groups, avail_groups):
                   [sg.Frame('Group Management', layout=change_group_layout)],
                   [sg.Frame('Seedling Management', layout=manage_groups_layout)],
                   [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write'), sg.B('Exit') ] ]
-    return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False, icon=icon if sys.platform == 'win32' else None)
+    return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False, icon=icon)
 
 
 def get_uid_groups(df):
@@ -69,13 +69,13 @@ def start_editor(file=None):
         # no file was provided in file picker
         sys.exit()
     elif not file.endswith('.postQC.tsv'):
-        sg.Popup('The file must be a postQC.tsv file.')
+        sg.Popup('The file must be a postQC.tsv file.', icon=icon)
         sys.exit()
     else:
         try:
             df = pd.read_csv(file, sep='\t', engine='python')
         except OSError as e:
-            sg.Popup("Couldn't read file: " + e.strerror)
+            sg.Popup("Couldn't read file: " + e.strerror, icon=icon)
             sys.exit()
 
     # get uid/group combos, and save a working copy in a dataframe
@@ -101,7 +101,7 @@ def start_editor(file=None):
             try:
                 df.to_csv(file, sep='\t', index=False)
             except OSError as e:
-                sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror)
+                sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon)
         elif event == 'Add':
             groups.append([values['-ADDGROUP-'],])
             groups.sort(key=lambda x: x[0])

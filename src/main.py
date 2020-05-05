@@ -17,7 +17,7 @@ else:
     layout = [
         [sg.T('What do you want to do?')],
         [sg.B('Customize Assay', key='Customize'), sg.B('Merge Assays', key='Merge')]]
-    window = sg.Window('SPIRO Assay Customizer', layout=layout, icon=icon if sys.platform == 'win32' else None)
+    window = sg.Window('SPIRO Assay Customizer', layout=layout, icon=icon)
 
     event, values = window.read()
 

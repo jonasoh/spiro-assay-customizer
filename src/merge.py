@@ -20,7 +20,7 @@ def merge_window():
         [sg.Frame('Merge experiments', layout=explist)],
         [sg.Frame('Add experiment', layout=addexp)],
         [sg.B('Perform Merge', key='Merge')] ]
-    return sg.Window('Merge', layout=layout, grab_anywhere=False, icon=icon if sys.platform == 'win32' else None)
+    return sg.Window('Merge', layout=layout, grab_anywhere=False, icon=icon)
 
 
 def save_germination(g_df, log_df):
@@ -29,12 +29,12 @@ def save_germination(g_df, log_df):
         [sg.Text('Choose location for merged results')],
         [sg.T('Folder:'), sg.I(key='dir', size=(45,1)), sg.FolderBrowse()],
         [sg.OK(), sg.Cancel()] ]
-    save_window = sg.Window('Save merged data', layout=savelayout, icon=icon if sys.platform == 'win32' else None)
+    save_window = sg.Window('Save merged data', layout=savelayout, icon=icon)
     event, values = save_window.read()
     
     if event in (None, 'Cancel'):
         save_window.close()
-        sg.Popup('Merged data not saved.', title='SPIRO Assay Customizer', icon=icon if sys.platform == 'win32' else None)
+        sg.Popup('Merged data not saved.', title='SPIRO Assay Customizer', icon=icon)
         return
     elif event == 'OK':
         save_window.close()
@@ -42,13 +42,13 @@ def save_germination(g_df, log_df):
         os.makedirs(dir, exist_ok=True)
         g_file = os.path.join(dir, 'germination.postQC.tsv')
         if os.path.exists(g_file):
-            sg.Popup('Selected directory already contains germination data. Aborting.', title='SPIRO Assay Customizer', icon=icon if sys.platform == 'win32' else None)
+            sg.Popup('Selected directory already contains germination data. Aborting.', title='SPIRO Assay Customizer', icon=icon)
             return
         try:
             g_df.to_csv(g_file, index=False, na_rep='NA', sep='\t')
             log_df.to_csv(log_file, index=False, na_rep='NA', sep='\t')
         except OSError as e:
-            sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon if sys.platform == 'win32' else None)
+            sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon)
 
 
 def save_rootgrowth(r_df):
@@ -57,7 +57,7 @@ def save_rootgrowth(r_df):
         [sg.Text('Choose location for merged results')],
         [sg.T('Folder:'), sg.I(key='dir', size=(45,1)), sg.FolderBrowse()],
         [sg.OK(), sg.Cancel()] ]
-    save_window = sg.Window('Save merged data', layout=savelayout, icon=icon if sys.platform == 'win32' else None)
+    save_window = sg.Window('Save merged data', layout=savelayout, icon=icon)
     event, values = save_window.read()
     
     if event in (None, 'Cancel'):
@@ -70,12 +70,12 @@ def save_rootgrowth(r_df):
         os.makedirs(dir, exist_ok=True)
         r_file = os.path.join(dir, 'rootgrowth.postQC.tsv')
         if os.path.exists(r_file):
-            sg.Popup('Selected directory already contains root growth data. Aborting.', title='SPIRO Assay Customizer', icon=icon if sys.platform == 'win32' else None)
+            sg.Popup('Selected directory already contains root growth data. Aborting.', title='SPIRO Assay Customizer', icon=icon)
             return
         try:
             r_df.to_csv(r_file, index=False, na_rep='NA', sep='\t')
         except OSError as e:
-            sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon if sys.platform == 'win32' else None)
+            sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon)
 
 
 def unlist(l):
@@ -86,12 +86,12 @@ def unlist(l):
 def merge_experiments(exps):
     """takes a list of a lists of experiment directories and returns merged_germination, merged_germination_log, merged_rootgrowth"""
     rtsv = lambda x: pd.read_csv(x, sep='\t')
-    bail = lambda x: sg.Popup("File " + x + "doesn't exist, but is needed for merge. Aborting.")
+    bail = lambda x: sg.Popup("File " + x + "doesn't exist, but is needed for merge. Aborting.", icon=icon)
     
     exps = unlist(exps)
     mode = os.path.basename(exps[0])
     if not all(mode == os.path.basename(x) for x in exps):
-        sg.Popup('Cannot mix Germination and Root Growth assays, not merging.', title='SPIRO Assay Customizer', icon=icon if sys.platform == 'win32' else None)
+        sg.Popup('Cannot mix Germination and Root Growth assays, not merging.', title='SPIRO Assay Customizer', icon=icon)
         return None
     
     r_df = pd.DataFrame()
@@ -107,7 +107,7 @@ def merge_experiments(exps):
             try:
                 r_tsv = rtsv(r_file)
             except OSError as e:
-                sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror, icon=icon if sys.platform == 'win32' else None)
+                sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror, icon=icon)
                 return None, None, None
             r_df = pd.concat([r_df, r_tsv])
         return None, None, r_df
@@ -123,7 +123,7 @@ def merge_experiments(exps):
                 g_tsv = rtsv(g_file)
                 log_tsv = rtsv(log_file)
             except OSError as e:
-                sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror, icon=icon if sys.platform == 'win32' else None)
+                sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror, icon=icon)
                 return None, None, None
             g_df = pd.concat([g_df, g_tsv])
             g_df = pd.concat([log_df, log_tsv])
@@ -140,7 +140,7 @@ def start_merge():
             break
         elif event == 'Add' and values['exp'] != '':
             if not values['exp'].endswith(('Germination', 'Root Growth')):
-                sg.Popup('Selected directory must be named either "Germination" or "Root Growth"', title='SPIRO Assay Customizer')
+                sg.Popup('Selected directory must be named either "Germination" or "Root Growth"', title='SPIRO Assay Customizer', icon=icon)
             else:
                 exps.append([values['exp']])
                 window['-EXPERIMENTS-'].Update(values=exps)
