@@ -36,6 +36,36 @@ jobs:
         name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
         path: dist/*.zip
 
+  Windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get tag
+      id: tag
+      run: |
+        echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.8'
+    - name: Install requirements
+      run: |
+        python -m pip install -r requirements.txt
+        python -m pip install pyinstaller
+    - name: Create Windows exe
+      run: |
+        pyinstaller --windowed --noconfirm -n 'SPIRO Assay Customizer' -i resources/spiro-assay-customizer.ico src/main.py
+    - name: Build Zip
+      run: |
+        cd dist
+        7z a SPIRO_Assay_Customizer_Windows_${{ steps.tag.outputs.tag }}.zip "SPIRO Assay Customizer.exe"
+    - name: Upload release
+      uses: actions/upload-artifact@v2
+      with:
+        name: SPIRO Assay Customizer Windows ${{ steps.tag.outputs.tag }}.zip
+        path: dist/*.zip
+
   Linux:
     runs-on: ubuntu-16.04
     
