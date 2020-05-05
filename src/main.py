@@ -3,6 +3,7 @@ import sys
 import PySimpleGUI as sg
 import merge
 import assay_editor
+from icon import icon
 
 sg.set_options(auto_size_buttons=True, font='Any 12')
 sg.ChangeLookAndFeel('Dark')
@@ -16,7 +17,7 @@ else:
     layout = [
         [sg.T('What do you want to do?')],
         [sg.B('Customize Assay', key='Customize'), sg.B('Merge Assays', key='Merge')]]
-    window = sg.Window('SPIRO Assay Customizer', layout=layout)
+    window = sg.Window('SPIRO Assay Customizer', layout=layout, icon=icon if sys.platform == 'win32' else None)
 
     event, values = window.read()
 

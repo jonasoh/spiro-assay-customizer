@@ -3,13 +3,14 @@ import sys
 import PySimpleGUI as sg
 import pandas as pd
 import numpy as np
+from icon import icon
 
 def file_picker():
     """shows a file picker for selecting a postQC.tsv file. Returns None on Cancel."""
     chooser = sg.Window('Choose file', [
         [sg.Text('Filename')],
         [sg.Input(), sg.FileBrowse(key='-FILE-', file_types=(('PostQC TSV files', '*.postQC.tsv'),))],
-        [sg.OK(), sg.Cancel()] ])
+        [sg.OK(), sg.Cancel()] ], icon=icon if sys.platform == 'win32' else None)
 
     event, values = chooser.read()
     if event in (None, 'Cancel'):
@@ -35,7 +36,7 @@ def postqc_window(uid_groups, avail_groups):
                   [sg.Frame('Group Management', layout=change_group_layout)],
                   [sg.Frame('Seedling Management', layout=manage_groups_layout)],
                   [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write'), sg.B('Exit') ] ]
-    return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False)
+    return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False, icon=icon if sys.platform == 'win32' else None)
 
 
 def get_uid_groups(df):
