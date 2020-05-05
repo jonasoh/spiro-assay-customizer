@@ -43,6 +43,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Get tag
       id: tag
+      shell: bash
       run: |
         echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
     - name: Set up Python
@@ -55,10 +56,12 @@ jobs:
         python -m pip install pyinstaller
     - name: Create Windows exe
       run: |
-        pyinstaller --windowed --noconfirm -n 'SPIRO Assay Customizer' -i resources/spiro-assay-customizer.ico src/main.py
+        pyinstaller --windowed --noconfirm -n "SPIRO Assay Customizer" -i resources/spiro-assay-customizer.ico src/main.py
     - name: Build Zip
       run: |
+        dir
         cd dist
+        dir
         7z a SPIRO_Assay_Customizer_Windows_${{ steps.tag.outputs.tag }}.zip "SPIRO Assay Customizer.exe"
     - name: Upload release
       uses: actions/upload-artifact@v2
