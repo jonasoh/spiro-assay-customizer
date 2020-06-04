@@ -56,7 +56,7 @@ jobs:
         python -m pip install pyinstaller
     - name: Create Windows exe
       run: |
-        pyinstaller --windowed --noconfirm -n "SPIRO Assay Customizer" -i resources/spiro-assay-customizer.ico src/main.py
+        pyinstaller --windowed --noconfirm -n "SPIRO Assay Customizer" -i resources/spiro-assay-customizer.ico -F src/main.py
     - name: Build Zip
       run: |
         dir
