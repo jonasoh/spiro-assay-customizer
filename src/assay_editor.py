@@ -35,7 +35,7 @@ def postqc_window(uid_groups, avail_groups):
                   select_mode=sg.TABLE_SELECT_MODE_BROWSE) ],
                   [sg.Frame('Group Management', layout=change_group_layout)],
                   [sg.Frame('Seedling Management', layout=manage_groups_layout)],
-                  [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write'), sg.B('Exit') ] ]
+                  [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write'), sg.B('Exit')]]
     return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False, icon=icon)
 
 

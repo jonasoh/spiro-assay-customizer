@@ -11,7 +11,8 @@ sg.ChangeLookAndFeel('Dark')
 if len(sys.argv) == 2:
     assay_editor.start_editor(file=sys.argv[1])
 elif len(sys.argv) > 2:
-    sg.Popup('Assay editor can only work on one file at a time. Please merge files first.', title='SPIRO Assay Customizer')
+    sg.Popup('Assay editor can only work on one file at a time. Please merge files first.',
+             title='SPIRO Assay Customizer', icon=icon)
     sys.exit()
 else:
     layout = [
