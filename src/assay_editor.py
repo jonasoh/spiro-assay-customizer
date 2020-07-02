@@ -26,8 +26,8 @@ def postqc_window(uid_groups, avail_groups):
     """main interface. uid_groups is a list of [UID, Group] combinations.
        avail_groups is a list of the available groups. returns the main window object."""
     table_height = min(25, len(uid_groups))
-    mgmt_layout = [[sg.B('Add New Group', key='Add'),
-                    sg.B('Assign Seedling to Group', key='Change'),
+    mgmt_layout = [[sg.B('Add New Group', key='Add')],
+                   [sg.B('Assign Seedling to Group', key='Change'),
                     sg.B('Exclude Seedling from Analysis', key='Exclude')]]
     layout = [
         [sg.Table(values=uid_groups, headings=['UID', 'Group'], display_row_numbers=False,
