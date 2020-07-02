@@ -104,11 +104,13 @@ def start_editor(file=None):
             except OSError as e:
                 sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon)
         elif event == 'Add':
+            window.Hide()
             newgroup = sg.popup_get_text('Name of new group', 'SPIRO Assay Customizer', icon=icon)
             if isinstance(newgroup, str):
                 groups.append([newgroup, ])
                 groups.sort(key=lambda x: x[0])
                 window['-GROUPS-'].Update(values=groups)
+            window.UnHide()
         elif event == 'Exclude':
             uid_groups_df.loc[values['-COMBOS-'], 1] = 'NA'
             uid_groups = uid_groups_df.values.tolist()
