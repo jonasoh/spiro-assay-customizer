@@ -43,7 +43,7 @@ def save_germination(g_df, log_df):
         dir = os.path.join(values['dir'], 'Results', 'Germination')
         os.makedirs(dir, exist_ok=True)
         g_file = os.path.join(dir, 'germination.postQC.tsv')
-        log_file = os.path.join(dir, 'germination.postQC.tsv.log')
+        log_file = os.path.join(dir, 'germination.postQC.log.tsv')
         if os.path.exists(g_file):
             sg.Popup('Selected directory already contains germination data. Aborting.',
                      title='SPIRO Assay Customizer', icon=icon)
@@ -172,6 +172,8 @@ def start_merge():
             g_df, log_df, r_df, ps_df = merge_experiments(exps)
             if g_df is not None:
                 save_germination(g_df, log_df)
+                sg.Popup('Merged germination data saved.', title='SPIRO Assay Customizer', icon=icon)
             elif r_df is not None:
                 save_rootgrowth(r_df, ps_df)
+                sg.Popup('Merged root growth data saved.', title='SPIRO Assay Customizer', icon=icon)
     window.close()
