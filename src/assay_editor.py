@@ -26,16 +26,16 @@ def postqc_window(uid_groups, avail_groups):
     """main interface. uid_groups is a list of [UID, Group] combinations.
        avail_groups is a list of the available groups. returns the main window object."""
     table_height = min(25, len(uid_groups))
-    change_group_layout = [[sg.T('Add group:'), sg.I(key='-ADDGROUP-', size=(22, 1)), sg.B('Add Group', key='Add')]]
-    manage_groups_layout = [[sg.B('Assign to Group', key='Change'), sg.B('Exclude from Analysis', key='Exclude')]]
+    mgmt_layout = [[sg.B('Add New Group', key='Add'),
+                    sg.B('Assign Seedling to Group', key='Change'),
+                    sg.B('Exclude Seedling from Analysis', key='Exclude')]]
     layout = [
         [sg.Table(values=uid_groups, headings=['UID', 'Group'], display_row_numbers=False,
                   auto_size_columns=True, num_rows=table_height, key="-COMBOS-"),
             sg.Table(values=avail_groups, headings=['Available groups', ], display_row_numbers=False,
                      auto_size_columns=True, num_rows=table_height, key="-GROUPS-",
                      select_mode=sg.TABLE_SELECT_MODE_BROWSE)],
-        [sg.Frame('Group Management', layout=change_group_layout)],
-        [sg.Frame('Seedling Management', layout=manage_groups_layout)],
+        [sg.Frame('Seedling and Group Management', layout=mgmt_layout)],
         [sg.Sizer(h_pixels=120), sg.B('Write PostQC File', key='Write'), sg.B('Exit')]]
     return sg.Window('SPIRO Assay Customizer', layout, grab_anywhere=False, icon=icon)
 
@@ -104,9 +104,11 @@ def start_editor(file=None):
             except OSError as e:
                 sg.Popup('Unable to write file ' + e.filename + ': ' + e.strerror, icon=icon)
         elif event == 'Add':
-            groups.append([values['-ADDGROUP-'], ])
-            groups.sort(key=lambda x: x[0])
-            window['-GROUPS-'].Update(values=groups)
+            newgroup = sg.popup_get_text('Name of new group', 'SPIRO Assay Customizer', icon=icon)
+            if isinstance(newgroup, str):
+                groups.append([newgroup, ])
+                groups.sort(key=lambda x: x[0])
+                window['-GROUPS-'].Update(values=groups)
         elif event == 'Exclude':
             uid_groups_df.loc[values['-COMBOS-'], 1] = 'NA'
             uid_groups = uid_groups_df.values.tolist()
