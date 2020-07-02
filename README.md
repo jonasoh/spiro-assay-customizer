@@ -5,8 +5,12 @@ This application is cross-platform, and should run on MacOS, Windows, common Uni
 
 ## Customize Assay
 
-<img width="598" alt="image" src="https://user-images.githubusercontent.com/6480370/80722987-4c9f7180-8b00-11ea-9e0a-d63a55cfa6f4.png">
+The Customize Assay mode allows you to reassign seedlings to groups, and to exclude seedlings or groups of seedlings from analysis.
+
+<img width="602" alt="image" src="https://user-images.githubusercontent.com/6480370/86357062-ce289280-bc5c-11ea-816f-a656977b224c.png">
 
 ## Merge Assays
+
+In the Merge Assays mode, analysis results from multiple runs may be joined together in order to be jointly analyzed.
 
 <img width="683" alt="image" src="https://user-images.githubusercontent.com/6480370/80723195-9d16cf00-8b00-11ea-9d25-f47389d92d13.png">
