@@ -2,7 +2,7 @@ altgraph==0.17
 macholib==1.14
 numpy==1.18.3
 pandas==1.0.3
-PySimpleGUI==4.18.2
+PySimpleGUI==4.22.0
 python-dateutil==2.8.1
 pytz==2020.1
 six==1.14.0
