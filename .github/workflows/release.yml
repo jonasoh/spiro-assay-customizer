@@ -99,7 +99,7 @@ jobs:
         path: dist/*.gz
 
   Release:
-    needs: [MacOS, Linux]
+    needs: [MacOS, Linux, Windows]
     runs-on: ubuntu-latest
     
     steps:
@@ -113,12 +113,17 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
-        path: releases/SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
+        path: releases/
+    - name: Download Windows release
+      uses: actions/download-artifact@v2
+      with:
+        name: SPIRO Assay Customizer Windows ${{ steps.tag.outputs.tag }}.zip
+        path: releases/
     - name: Download Linux release
       uses: actions/download-artifact@v2
       with:
         name: SPIRO Assay Customizer Linux ${{ steps.tag.outputs.tag }}.gz
-        path: releases/SPIRO Assay Customizer.gz
+        path: releases/
     - name: Create release
       id: create_release
       uses: actions/create-release@v1
@@ -137,6 +142,15 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: releases/SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
         asset_name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
+        asset_content_type: application/zip
+    - name: Upload Windows release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: releases/SPIRO Assay Customizer Windows ${{ steps.tag.outputs.tag }}.zip
+        asset_name: SPIRO Assay Customizer Windows ${{ steps.tag.outputs.tag }}.zip
         asset_content_type: application/zip
     - name: Upload Linux release asset
       uses: actions/upload-release-asset@v1
