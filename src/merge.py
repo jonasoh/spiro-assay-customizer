@@ -5,18 +5,19 @@ import PySimpleGUI as sg
 import pandas as pd
 from icon import icon
 
+
 def merge_window():
     """window for merging experiments. will deal with either root growth or germination data,
        but not both at the same time."""
     # the table of experiments
     explist = [
-        [sg.Table(headings=['Experiments',], display_row_numbers=False,
-        auto_size_columns=False, values=list([]), def_col_width=65,
-        num_rows=8, key='-EXPERIMENTS-', select_mode=sg.TABLE_SELECT_MODE_BROWSE)],
-        [sg.B('Remove experiment', key='Remove')] ]
+        [sg.Table(headings=['Experiments', ], display_row_numbers=False,
+                  auto_size_columns=False, values=list([]), def_col_width=65,
+                  num_rows=8, key='-EXPERIMENTS-', select_mode=sg.TABLE_SELECT_MODE_BROWSE)],
+        [sg.B('Remove experiment', key='Remove')]]
     # rest of ui
     addexp = [
-        [sg.T('Folder:'), sg.I(key='exp', size=(45,1)), sg.FolderBrowse(), sg.B('Add')] ]
+        [sg.T('Folder:'), sg.I(key='exp', size=(45, 1)), sg.FolderBrowse(), sg.B('Add')]]
     layout = [
         [sg.Frame('Merge experiments', layout=explist)],
         [sg.Frame('Add experiment', layout=addexp)],
@@ -28,8 +29,8 @@ def save_germination(g_df, log_df):
     """save merged germination data to a new folder"""
     savelayout = [
         [sg.Text('Choose location for merged results')],
-        [sg.T('Folder:'), sg.I(key='dir', size=(45,1)), sg.FolderBrowse()],
-        [sg.OK(), sg.Cancel()] ]
+        [sg.T('Folder:'), sg.I(key='dir', size=(45, 1)), sg.FolderBrowse()],
+        [sg.OK(), sg.Cancel()]]
     save_window = sg.Window('Save merged data', layout=savelayout, icon=icon)
     event, values = save_window.read()
     
@@ -42,6 +43,7 @@ def save_germination(g_df, log_df):
         dir = os.path.join(values['dir'], 'Results', 'Germination')
         os.makedirs(dir, exist_ok=True)
         g_file = os.path.join(dir, 'germination.postQC.tsv')
+        log_file = os.path.join(dir, 'germination.postQC.tsv.log')
         if os.path.exists(g_file):
             sg.Popup('Selected directory already contains germination data. Aborting.',
                      title='SPIRO Assay Customizer', icon=icon)
@@ -143,7 +145,7 @@ def merge_experiments(exps):
                 sg.Popup("Couldn't open file " + e.filename + ": " + e.strerror, icon=icon)
                 return fail
             g_df = pd.concat([g_df, g_tsv])
-            g_df = pd.concat([log_df, log_tsv])
+            log_df = pd.concat([log_df, log_tsv])
         return g_df, log_df, None, None
 
 
@@ -152,7 +154,7 @@ def start_merge():
     exps = list()
 
     while True:
-        event, values = window.read(timeout=250)
+        event, values = window.read()
         if event in (None, 'Exit'):
             break
         elif event == 'Add' and values['exp'] != '':
