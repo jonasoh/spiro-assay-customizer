@@ -29,7 +29,8 @@ jobs:
         pyinstaller --add-binary='/System/Library/Frameworks/Tk.framework/Tk':'tk' --add-binary='/System/Library/Frameworks/Tcl.framework/Tcl':'tcl' --osx-bundle-identifier slu.spiro.customizer --windowed --noconfirm -n 'SPIRO Assay Customizer' -i resources/spiro-assay-customizer.icns src/main.py
     - name: Build Zip
       run: |
-        zip -r dist/SPIRO_Assay_Customizer_Mac_${{ steps.tag.outputs.tag }}.zip "dist/SPIRO Assay Customizer.app"
+        cd dist
+        zip -r SPIRO_Assay_Customizer_Mac_${{ steps.tag.outputs.tag }}.zip "SPIRO Assay Customizer.app"
     - name: Upload release
       uses: actions/upload-artifact@v2
       with:
@@ -59,9 +60,7 @@ jobs:
         pyinstaller --windowed --noconfirm -n "SPIRO Assay Customizer" -i resources/spiro-assay-customizer.ico -F src/main.py
     - name: Build Zip
       run: |
-        dir
         cd dist
-        dir
         7z a SPIRO_Assay_Customizer_Windows_${{ steps.tag.outputs.tag }}.zip "SPIRO Assay Customizer.exe"
     - name: Upload release
       uses: actions/upload-artifact@v2
