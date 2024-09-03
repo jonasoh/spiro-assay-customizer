@@ -109,17 +109,17 @@ jobs:
       run: |
         echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
     - name: Download MacOS release
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: SPIRO Assay Customizer Mac ${{ steps.tag.outputs.tag }}.zip
         path: releases/
     - name: Download Windows release
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: SPIRO Assay Customizer Windows ${{ steps.tag.outputs.tag }}.zip
         path: releases/
     - name: Download Linux release
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: SPIRO Assay Customizer Linux ${{ steps.tag.outputs.tag }}.gz
         path: releases/
